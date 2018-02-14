@@ -178,7 +178,7 @@ class CustomerMainMenu extends MenuBuilder
                     $child->setChildrenAttribute('class', 'collapse');
                 }
 
-                $openClass = (stripos($uri, $itemUri) === false) ? '' : 'active';
+                // $openClass = (stripos($uri, $itemUri) === false) ? '' : 'active';
                 //$child->setChildrenAttribute('class', 'sidebar_submenu '.$openClass);
 
 

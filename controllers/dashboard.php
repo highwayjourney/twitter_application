@@ -78,9 +78,9 @@ class Dashboard extends MY_Controller {
         CssJs::getInst()
             ->c_js('settings/socialmedia', 'account_analytics');
 
-        CssJs::getInst()->add_js(array(
-            'libs/highcharts/highcharts.js'
-        ));
+        // CssJs::getInst()->add_js(array(
+        //     'libs/highcharts/highcharts.js'
+        // ));
         $access_tokens = array_filter(Access_token::getAllByUserIdAndProfileIdAsArray($this->c_user->id, $this->profile->id));
         //ddd($access_tokens);
         $analytics_const = array(
@@ -92,14 +92,18 @@ class Dashboard extends MY_Controller {
             );
         foreach ($access_tokens as $access_token) {
             $accessToken = new Access_token($access_token[0]['id']);
-            echo "HALA : ".$access_token[0]['type'];
-            $post_data[$access_token[0]['type']] = $accessToken
+            // echo "HALA : ".$access_token[0]['type'];
+            if (array_key_exists($access_token[0]['type'], $analytics_const)) {
+                $post_data[$access_token[0]['type']] = $accessToken
                 ->social_analytics
                 ->by_type($analytics_const[$access_token[0]['type']])
                 ->get()->all_to_array();
+            }
+            
         }
         foreach ($post_data as $social => $value) {
             $buffer = 0;
+            $total = 0;
             foreach ($value as $_value) {
                 //d($_value['value']);
                 $total = $buffer + $_value['value'];
@@ -197,7 +201,7 @@ class Dashboard extends MY_Controller {
 
         // $this->load->helper('Image_designer_helper');
         // $this->template->set('imageDesignerImages', Image_designer::getImages());
-        $this->template->set('summary', $summary);
+        // $this->template->set('summary', $summary);
         $this->template->set('opportunities', $opportunities);
         //$this->template->set('need_welcome_notification',  User_notification::needShowNotification($this->c_user->id, User_notification::WELCOME));
         $this->template->set('count', $count);

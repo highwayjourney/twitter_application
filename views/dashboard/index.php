@@ -207,7 +207,7 @@
     </div>
 
 </div>
-<?php if($need_welcome_notification): ?>
+<?php if(isset($need_welcome_notification)): ?>
     <script language="JavaScript">
         $(window).ready(function() {
             $('#welcome').modal();
