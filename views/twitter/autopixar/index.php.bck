@@ -1,0 +1,48 @@
+<style type="text/css" media="screen">
+	html, body { height:100%; background-color: #ffffff;}
+	body { margin:0; padding:0; overflow:hidden; }
+	S#flashContent { width:100%; height:100%; }
+</style>
+<div class="content">
+	<div class="col-xs-12">        
+		<div id="flashContent" align="center">
+		    <object classid="clsid:d27cdb6e-ae6d-11cf-96b8-444553540000" width="1200" height="680" id="Loader" align="left">
+				<param name="movie" value="http://app.autopixar.com/public/assets/flash/Main.swf" /> 
+				<param name="quality" value="high" />
+				<param name="bgcolor" value="#ffffff" />
+				<param name="play" value="true" />
+				<param name="loop" value="true" />
+				<param name="wmode" value="window" />
+				<param name="scale" value="showall" />
+				<param name="menu" value="true" />
+				<param name="devicefont" value="false" />
+				<param name="salign" value="" />
+				<param name="base" value="http://app.autopixar.com/public/assets/flash/" />
+				<param name="allowScriptAccess" value="sameDomain" />
+				<!--[if !IE]>-->
+				<object type="application/x-shockwave-flash" data="http://app.autopixar.com/public/assets/flash/Main.swf" width="1200" height="680">
+					<param name="movie" value="Loader.swf" />
+					<param name="quality" value="high" />
+					<param name="bgcolor" value="#ffffff" />
+					<param name="play" value="true" />
+					<param name="loop" value="true" />
+					<param name="wmode" value="window" />
+					<param name="scale" value="showall" />
+					<param name="menu" value="true" />
+					<param name="devicefont" value="false" />
+					<param name="salign" value="" />
+					<param name="base" value="http://app.autopixar.com/public/assets/flash/" />
+					<param name="allowScriptAccess" value="sameDomain" />
+				<!--<![endif]-->
+					<a href="http://www.adobe.com/go/getflash">
+						<img src="http://www.adobe.com/images/shared/download_buttons/get_flash_player.gif" alt="Get Adobe Flash player" />
+					</a>
+				<!--[if !IE]>-->
+				</object>
+				<!--<![endif]-->
+			</object>
+		</div>        
+<!-- <iframe src="http://app.autopixar.com/public/assets/flash" id="iframe" scrolling="no" style="width: 112%; height: 860px; display: block;" frameborder="0"></iframe> -->
+<?php echo $this->template->block('_post_modal', 'blocks/modal/twitter/post_modal'); ?>
+	</div>
+</div>
