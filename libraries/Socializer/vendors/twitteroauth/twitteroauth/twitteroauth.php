@@ -149,6 +149,18 @@ class TwitterOAuth {
     }
     return $response;
   }
+
+  /**
+   * GET wrapper for oAuthRequest. (Ads API)
+   */
+  function getAds($url, $parameters = array()) {
+    $host = "https://ads-api.twitter.com/3/";
+    $response = $this->oAuthRequest($url, 'GET', $parameters);
+    if ($this->format === 'json' && $this->decode_json) {
+      return json_decode($response);
+    }
+    return $response;
+  }
   
   /**
    * POST wrapper for oAuthRequest.
@@ -161,12 +173,12 @@ class TwitterOAuth {
     return $response;
   }
 
-    function upload($url, $parameters = array()) {
-    // $this->host = "https://upload.twitter.com/1.1/";
-        $response = $this->oAuthRequest($url, 'POST', $parameters, true);
-          $this->host = "https://api.twitter.com/1.1/";
-          if ($this->format === 'json' && $this->decode_json) {
-               return json_decode($response);
+  function upload($url, $parameters = array()) {
+  // $this->host = "https://upload.twitter.com/1.1/";
+      $response = $this->oAuthRequest($url, 'POST', $parameters, true);
+        $this->host = "https://api.twitter.com/1.1/";
+        if ($this->format === 'json' && $this->decode_json) {
+             return json_decode($response);
   }
    return $response;
   }

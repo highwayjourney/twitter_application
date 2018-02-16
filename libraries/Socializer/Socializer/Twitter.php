@@ -1015,4 +1015,70 @@ class Socializer_Twitter
     // }
 
 
+    /**
+     * Get Keyword Insights
+     * @param array keywords
+     * @param array $include words separated by comma
+     * @param array $exclude words separated by comma
+     * @param bool $exact
+     * @return string
+     */
+    public function get_keyword_insights() {
+
+        $connection = new TwitterOAuth( $this->_config['consumer_key'], $this->_config['consumer_secret'], $this->_token['token1'], $this->_token['token2'] );
+        $params['end_time']='2018-02-08';
+        $params['granularity']='HOUR';
+        $params['keywords']='developers';
+        $params['start_time']='2018-02-01';
+        $endpoint = 'insights/keywords/search';
+
+        //asks whether it needs data from cache or no
+        // if($this->fetchFromCache($endpoint)){
+        //     $data = $this->getCache($endpoint);
+        // } else {
+
+        echo "--------connection";
+
+            $data = $connection->getAds($endpoint, $params);
+            //$data = array_slice($data[0]->trends, 0,$number);
+        echo "---------after connection";
+        var_dump($data);
+        echo "---------after data";
+            $this->is_error($data);
+            $data = $data[0]->data;
+            // $this->saveCache($endpoint, $data);            
+        // }
+        return $data;
+
+        // if ($exact) {
+        //     $result_query = '"'.$query.'"';
+        // } else {
+        //     $result_query = $query;
+        // }
+        // foreach($include as $include_element) {
+        //     $result_query .= ' +'.$include_element;
+        // }
+        // foreach($exclude as $exclude_element) {
+        //     $result_query .= ' -'.$exclude_element;
+        // }
+        // return urlencode($result_query);
+    }
+
+    // public function trends($country_id = 1, $number = 15 ) {
+    //     $connection = new TwitterOAuth( $this->_config['consumer_key'], $this->_config['consumer_secret'], $this->_token['token1'], $this->_token['token2'] );
+    //     $params['id'] = $country_id;
+    //     $params['exclude'] = 'hashtags';
+    //     $endpoint = 'trends/place';
+    //     //asks whether it needs data from cache or no
+    //     if($this->fetchFromCache($endpoint)){
+    //         $data = $this->getCache($endpoint);
+    //     } else {
+    //         $data = $connection->get($endpoint, $params);
+    //         //$data = array_slice($data[0]->trends, 0,$number);
+    //         $this->is_error($data);
+    //         $data = $data[0]->trends;
+    //         $this->saveCache($endpoint, $data);            
+    //     }
+    //     return $data;
+    // }
 }

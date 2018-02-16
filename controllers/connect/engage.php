@@ -131,6 +131,25 @@ class Engage extends MY_Controller {
         if(empty($woid)){
             $woid = 1; //Worldwide
         }
+
+
+        ///TEST
+        try{
+            echo "--------------TRY";
+            $_full_insights = $twitter->get_keyword_insights();
+            var_dump($_full_insights);
+            echo "--------------ENDTRY";
+            exit();
+            
+        } catch (Exception $e) {
+            echo "BUG";
+            $this->addFlash('We can\'t connect to your Twitter Account, please try to add it again');
+            exit();
+        }
+
+        ///TEST END
+
+
         //Get Twitter Trends
         try{
             $_full_trends = $twitter->trends($woid);
