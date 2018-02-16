@@ -29,26 +29,26 @@ class Engage extends MY_Controller {
         $twitter = Socializer::factory('Twitter', $this->c_user->id, $access_token->to_array());
 
         //update followers if there are no followers
-        // $followers = $this->c_user->twitter_follower->where('access_token_id', $access_token->id)->order_by('id','random')->get(1)->all_to_array('follower_id');
+        $followers = $this->c_user->twitter_follower->where('access_token_id', $access_token->id)->order_by('id','random')->get(1)->all_to_array('follower_id');
         $now = new \DateTime('UTC');
-        // if(empty($followers)){
-        //     $social_group = new social_group($this->profile->id);
-        //     $args = $social_group->access_token->where('type','twitter')->get()->all_to_array()[0];
-        //     $args['profile_id'] = $this->profile->id;
-        //     if(!empty($args['profile_id']) && !empty($args['token1']) && !empty($args['token2']) && !empty($args['user_id'])) {                
+        if(empty($followers)){
+            $social_group = new social_group($this->profile->id);
+            $args = $social_group->access_token->where('type','twitter')->get()->all_to_array()[0];
+            $args['profile_id'] = $this->profile->id;
+            if(!empty($args['profile_id']) && !empty($args['token1']) && !empty($args['token2']) && !empty($args['user_id'])) {                
 
 
-        //         $this->jobQueue->addJob('tasks/twitter_task/searchUsers',  $args, array(
-        //             'thread' => 5,
-        //             'execute_after' => $now
-        //         ));
+                $this->jobQueue->addJob('tasks/twitter_task/searchUsers',  $args, array(
+                    'thread' => 5,
+                    'execute_after' => $now
+                ));
 
-        //         // $this->jobQueue->addJob('tasks/twitter_task/updateFollowers',  $args, array(
-        //         //     'thread' => self::SOCIAL_QUEUE_THREAD_UPDATE,
-        //         //     'execute_after' => $now
-        //         // ));  
-        //     }          
-        // }
+                $this->jobQueue->addJob('tasks/twitter_task/updateFollowers',  $args, array(
+                    'thread' => self::SOCIAL_QUEUE_THREAD_UPDATE,
+                    'execute_after' => $now
+                ));  
+            }          
+        }
 
         //get suggested lists from DB
         $lists = $this->profile->suggested_list->get()->to_array();        
@@ -75,14 +75,14 @@ class Engage extends MY_Controller {
         $current_lists = $this->profile->current_list->get()->all_to_array();
 
         //get next people following
-        // $will_follow = $this->c_user->twitter_follower
-        //     ->where('need_follow', true)
-        //     ->where('access_token_id', $access_token->id)
-        //     ->where('start_follow_time >', $now->getTimestamp())
-        //     ->order_by('start_follow_time', 'asc')  
-        //     ->get(10)->all_to_array('follower_id');     
         $will_follow = $this->c_user->twitter_follower
-            ->where('need_follow', true);
+            ->where('need_follow', true)
+            ->where('access_token_id', $access_token->id)
+            ->where('start_follow_time >', $now->getTimestamp())
+            ->order_by('start_follow_time', 'asc')  
+            ->get(10)->all_to_array('follower_id');     
+        // $will_follow = $this->c_user->twitter_follower
+        //     ->where('need_follow', true);
 
         // echo count($will_follow);
         // var_dump($will_follow);
