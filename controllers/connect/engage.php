@@ -66,21 +66,28 @@ class Engage extends MY_Controller {
                 if(!empty($lists)){
                     $suggested_list = $this->profile->suggested_list;
                     $suggested_list->to_db($lists, $this->c_user->id, $this->profile->id);
-                }                
+                }
             }
-        } 
+        }
 
         //ddd($this->c_user->getUserSearchKeywords($this->profile->id)->all_to_array());
         //get selected Lists
-        $current_lists = $this->profile->current_list->get()->all_to_array(); 
+        $current_lists = $this->profile->current_list->get()->all_to_array();
 
         //get next people following
+        // $will_follow = $this->c_user->twitter_follower
+        //     ->where('need_follow', true)
+        //     ->where('access_token_id', $access_token->id)
+        //     ->where('start_follow_time >', $now->getTimestamp())
+        //     ->order_by('start_follow_time', 'asc')  
+        //     ->get(10)->all_to_array('follower_id');     
         $will_follow = $this->c_user->twitter_follower
-            ->where('need_follow', true)
-            ->where('access_token_id', $access_token->id)
-            ->where('start_follow_time >', $now->getTimestamp())
-            ->order_by('start_follow_time', 'asc')  
-            ->get(10)->all_to_array('follower_id');     
+            ->where('need_follow', true);
+
+        // echo count($will_follow);
+        // var_dump($will_follow);
+        // exit();
+
 
         //get next retweets
         $will_retweet = $this->c_user->twitter_retweet

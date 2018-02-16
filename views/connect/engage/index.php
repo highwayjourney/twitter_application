@@ -28,7 +28,7 @@
                                 </a>
                              </li>
                         </li>
-                    <?endif; ?>
+                    <?php endif; ?>
                 <?php endforeach; ?>
             </ul>
 
