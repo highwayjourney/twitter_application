@@ -1,5 +1,8 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
+use GuzzleHttp\Client;
+use Guzzle\Http\Message;
+
 class Engage extends MY_Controller {
 
     public function __construct()
@@ -133,34 +136,34 @@ class Engage extends MY_Controller {
         }
 
 
-        ///TEST
-        try{
-            echo "--------------TRY";
-            $_full_insights = $twitter->get_keyword_insights();
-            var_dump($_full_insights);
-            echo "--------------ENDTRY";
-            exit();
+        ///TEST KEYWORD INSIGHTS
+        // try{
+        //     echo "--------------TRY";
+        //     $_full_insights = $twitter->get_keyword_insights();
+        //     var_dump($_full_insights);
+        //     echo "--------------ENDTRY";
+        //     exit();
             
-        } catch (Exception $e) {
-            echo "BUG";
-            $this->addFlash('We can\'t connect to your Twitter Account, please try to add it again');
-            exit();
-        }
+        // } catch (Exception $e) {
+        //     echo "BUG";
+        //     $this->addFlash('We can\'t connect to your Twitter Account, please try to add it again');
+        //     exit();
+        // }
 
         ///TEST END
 
 
-        //Get Twitter Trends
-        try{
-            $_full_trends = $twitter->trends($woid);
-            $trends = array_slice($_full_trends, 0,7);
-            foreach ($_full_trends as $value) {
-                $full_trends[] = $value->name;
-            }            
-        } catch (Exception $e) {
-            $_full_trends = array();
-            $this->addFlash('We can\'t connect to your Twitter Account, please try to add it again');
-        }
+        // //Get Twitter Trends
+        // try{
+        //     $_full_trends = $twitter->trends($woid);
+        //     $trends = array_slice($_full_trends, 0,7);
+        //     foreach ($_full_trends as $value) {
+        //         $full_trends[] = $value->name;
+        //     }            
+        // } catch (Exception $e) {
+        //     $_full_trends = array();
+        //     $this->addFlash('We can\'t connect to your Twitter Account, please try to add it again');
+        // }
         $engage_settings = array(
                                  'smart_engage' => $this->c_user->ifUserHasConfigValue('smart_engage', $access_token->id),
                                  'auto_follow' => $this->c_user->ifUserHasConfigValue('auto_follow', $access_token->id),
@@ -170,6 +173,13 @@ class Engage extends MY_Controller {
                                 );
 
         $keywords = User_search_keyword::inst()->get_user_keywords($this->c_user->id, $this->profile->id);
+
+        // Get Suggested Keywords
+        $_full_trends = $this->getTopKeywords($keywords);
+        $trends = array_slice($_full_trends, 0,7);
+        foreach ($_full_trends as $value) {
+            $full_trends[] = $value->name;
+        } 
 
         $new_keywords = array();
         $errors = array();
@@ -581,12 +591,91 @@ class Engage extends MY_Controller {
         }
         exit();        
     }
+
     private function initializeTwitter(){
-            $access_token = new Access_token();
-            $access_token = $access_token->getByTypeAndUserIdAndProfileId('twitter',$this->c_user->id,$this->profile->id);            
-            $this->load->library('Socializer/socializer');
-            $twitter = Socializer::factory('Twitter', $this->c_user->id, $access_token->to_array());  
-            return $twitter;      
+        $access_token = new Access_token();
+        $access_token = $access_token->getByTypeAndUserIdAndProfileId('twitter',$this->c_user->id,$this->profile->id);            
+        $this->load->library('Socializer/socializer');
+        $twitter = Socializer::factory('Twitter', $this->c_user->id, $access_token->to_array());  
+        return $twitter;      
+    }
+
+    /*
+     * Consume Datamuse API to get most similar words to provided group of keywords
+     */
+    private function getTopKeywords($arr){
+        $arrPool = array();
+
+        foreach ($arr as $key => $value) {
+            $target = $value->keyword;
+
+            $client = new Client();
+            $response = $client->request('GET', 'http://api.datamuse.com/words', [
+                'query' => ['ml' => $target,
+                            'max' => '20'
+                ]
+            ]);
+
+            if ($response->getStatusCode() == 200) {
+                $arrResult = json_decode($response->getBody()->getContents(), true);
+                $arrPool = array_merge($arrPool, $arrResult);
+            }
+            else {
+                echo 'Error in API access';
+            }
+        }
+
+        $this->sksort($arrPool, "score");
+
+        // var_dump($arrPool);
+
+        // foreach ($arrPool as $key => $value) {
+        //     echo $value['score']."---".$value['word'];
+        // }
+
+        // var_dump(array_slice($arrPool, 0, 10));
+        // die();
+
+        $arrNewPool = array();
+        foreach ($arrPool as $value) {
+            // $object = new stdClass();
+            // $object->name = $value['word'];
+            // $arrNewPool[]=$object;
+            $arrNewPool[] = (object) array('name' => $value['word']);
+        }
+
+        return $arrNewPool;
+    }
+
+    /*
+     * Sort Array according to specific field
+     */
+    function sksort(&$array, $subkey="id", $sort_ascending=false) {
+
+        if (count($array))
+            $temp_array[key($array)] = array_shift($array);
+
+        foreach($array as $key => $val){
+            $offset = 0;
+            $found = false;
+            foreach($temp_array as $tmp_key => $tmp_val)
+            {
+                if(!$found and strtolower($val[$subkey]) > strtolower($tmp_val[$subkey]))
+                {
+                    $temp_array = array_merge(    (array)array_slice($temp_array,0,$offset),
+                                                array($key => $val),
+                                                array_slice($temp_array,$offset)
+                                              );
+                    $found = true;
+                }
+                $offset++;
+            }
+            if(!$found) $temp_array = array_merge($temp_array, array($key => $val));
+        }
+
+        if ($sort_ascending) $array = array_reverse($temp_array);
+
+        else $array = $temp_array;
     }
 
 }
