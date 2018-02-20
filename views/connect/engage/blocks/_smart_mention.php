@@ -67,6 +67,7 @@
 						<?php endforeach; ?>
 					<?php else: ?>
 						<textarea placeholder="Hey {user}! Check this cool website: {website}" cols=5 rows=5 class="form-control quote"></textarea>
+						<a href="#" data-name="custom_quote" class="remove_field">Remove</a>
 					<?php endif; ?>
 					</div>
 					<button class="mention-add_input btn btn-save boton">Add Another Mention</button>
