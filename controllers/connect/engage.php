@@ -173,6 +173,16 @@ class Engage extends MY_Controller {
 
         $keywords = User_search_keyword::inst()->get_user_keywords($this->c_user->id, $this->profile->id);
 
+        // //TEST
+        // $search_tweets = $twitter->search_tweets("@MLBStatoftheDay");
+        // // $query = array(
+        // //     "q" => "#WorldSeries",
+        // //     "result_type" => "popular"
+        // // );
+        // var_dump($search_tweets);
+        // die();
+
+
         // Get Suggested Keywords
         $_full_trends = $this->getTopKeywords($keywords);
         $_partial_trends = array_slice($_full_trends, 0, 20);
