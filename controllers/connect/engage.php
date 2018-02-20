@@ -261,12 +261,14 @@ class Engage extends MY_Controller {
 
         //Fecth data for retweets and Favourites
         $twitter = $this->initializeTwitter();
+        $_will_retweet = array();
         foreach ($will_retweet as $value) {
             $_will_retweet[] = $value['tweet_id'];
         }
         unset($will_retweet);
         $retweet_data = $twitter->get_single_tweet(implode(",", $_will_retweet));
 
+        $_will_fav = array();
         foreach ($will_fav as $value) {
             $_will_fav[] = $value['tweet_id'];
         }
