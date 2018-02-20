@@ -1,7 +1,6 @@
 <?php defined('BASEPATH') OR exit('No direct script access allowed');
 
 use GuzzleHttp\Client;
-use Guzzle\Http\Message;
 
 class Engage extends MY_Controller {
 
@@ -176,7 +175,10 @@ class Engage extends MY_Controller {
 
         // Get Suggested Keywords
         $_full_trends = $this->getTopKeywords($keywords);
-        $trends = array_slice($_full_trends, 0,7);
+        $_partial_trends = array_slice($_full_trends, 0, 20);
+        shuffle($_partial_trends);
+        $trends = array_slice($_partial_trends, 0, 7);
+
         foreach ($_full_trends as $value) {
             $full_trends[] = $value->name;
         } 
